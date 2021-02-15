@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XMemes </title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+            
+            background-image: url("https://thumbs.dreamstime.com/b/vector-ha-ha-seamless-pattern-funny-background-suitable-paper-textile-print-card-web-background-black-background-71743296.jpg") ;
+        }
+        
+        #logo{
+            display: flex;
+            background-color: rgb(84, 123, 207);
+            justify-content: center;
+           
+        }
+        #logo-img{
+            background-color: rgb(255, 255, 255);
+            border-radius: 40px;
+            border:solid 2px black;
+            
+            margin-top: 10px;
+            margin-bottom: 10px;
+            width: 200px;
+        }
+        #form-container{
+            background-color: rgb(255, 235, 170);
+            text-align: center;
+            border: solid 5px rgb(0, 0, 0);
+            width: 50%;
+            margin: auto;
+            margin-top: 50px;
+            margin-bottom: 35px;
+            border-radius: 15px;
+        }
+
+        .field{
+            margin: 5px 0;
+        }
+        input{
+
+            resize: horizontal;
+            max-width: 60%;
+        }
+        button{
+            
+            padding: 10px;
+            transition: 0.5s;
+            box-shadow: 0 0 2px rgb(151, 150, 150);
+            border-radius: 10px;
+            background-image: linear-gradient(to right, #f6d365 0%, #fda085 51%, #f6d365 100%);
+        }
+        button:hover{
+            cursor: pointer;
+            background-position: right center;
+        }
+        #memelist-wrapper{
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: space-evenly;
+        }
+        .flex-wrapper{
+            display: flex;
+            
+        }
+        .meme-wrapper{
+            margin : 10px;
+            background-color: rgb(255, 235, 170);
+            border: solid 5px rgb(0, 0, 0);
+            width: fit-content;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        span{
+            display: block;
+        }
+        .meme-name{
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="logo" >
+        <img id="logo-img" src="images\IMG_20210214_052813.jpg" height="60px">
+    </div>
+    <div className = "container">
+        <div id = "form-container">
+            <div id="form-wrapper">
+              <form>
+                <h2>Laugh Out Loud</h2>
+                <div class="field" >
+                  <label id="f1" for="name" >Name</label> 
+                  <input  id="name" name="name" placeholder="Name" required="" type="text" />
+                </div> 
+                
+                <div class="field" >
+                  <label id="f2" for="caption" >Caption</label>
+                  <input  id="caption" name="caption" placeholder="Be Creative !" required="" type="text" />
+                </div>
+                
+                <div class="field" >  
+                  <label id="f3" for="url" >URL</label>
+                  <input  id="url" name="url" placeholder="Image Link" required="" type="url" />
+                </div>  
+                  
+                  <button id="form-button" type="submit">SUBMIT</button>
+
+              </form>
+            </div>
+        </div>
+
+        <div id = "memelist-wrapper">
+
+
+
+        
+    </div>
+
+
+    <script type="text/javascript">
+        
+        memelist()
+
+        function memelist(){
+            
+            var wrapper = document.getElementById("memelist-wrapper");
+            wrapper.innerHTML = ''
+            var url = "https://noblememes.herokuapp.com/memes"                         
+            console.log("tomato");
+
+            fetch(url)
+            .then((resp) => resp.json())
+            .then(function(data){
+                console.log('Data:', data);
+
+                var list = data
+                for(var i in list){
+
+                    var item = `
+
+                        <div id="data-row-${i}" class="meme-wrapper flex-wrapper"> 
+                            <div class = "meme-box">
+                                <span id="nam${i}" class="meme-name">${list[i].name}</span>
+                                <span id="cap${i}" class="meme-caption">${list[i].caption}</span>
+                                <span id="img${i}" class="meme-image"><img src=${list[i].url} alt=${list[i].url} width ="250"></span>
+                            </div>
+                            <div >
+                                <button class="edit">Edit</button>
+                            </div>
+                        </div>
+
+                    `
+                    wrapper.innerHTML += item
+                    
+                }
+
+                for (var i in list ){
+                    var editBtn = document.getElementsByClassName('edit')[i]
+
+                    editBtn.addEventListener('click', (function(item){
+                        return function(){
+                            editItem(item)
+                        }
+
+                    })(list[i])
+                    
+                    
+                    )
+                }
+            })
+
+
+        }
+
+        var form = document.getElementById('form-wrapper')
+        form.addEventListener('submit',function(e){
+            e.preventDefault()
+            console.log('Form submitted');
+            
+            var posturl = 'https://noblememes.herokuapp.com/memes'                    //  REPLACE this URL with the deployed one 
+            var name = document.getElementById('name').value
+            var caption = document.getElementById('caption').value
+            var url = document.getElementById('url').value
+            
+            fetch(posturl, {
+                method : 'POST',
+                headers :{
+                    'Content-type':'application/json',
+                },
+                body:JSON.stringify({ 
+                    "name" : name,
+                    "caption" : caption,
+                    "url" : url,
+                 } )
+            }).then(function(response){
+                memelist()
+               
+            })
+        })
+
+        
+        
+        
+        
+        function editItem(item){
+            console.log("item clicked" , item)
+            var id = item["id"]
+            console.log(id);
+
+        }
+
+
+    </script>
+
+</body>
+</html>
