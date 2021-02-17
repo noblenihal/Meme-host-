@@ -40,7 +40,9 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     
+    path('memes/', views.MemeList),
     path('memes', views.MemeList),
+    path('memes/<int:id>/', views.get_meme),
     path('memes/<int:id>', views.get_meme),
     path('swagger-ui/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('swagger', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

@@ -47,7 +47,7 @@ def MemeList(request):
         except:
             response  = {'Error':"There is some error"} 
 
-        return JsonResponse(response)
+        return JsonResponse(response , status=201)
 
                 
 
